@@ -160,21 +160,21 @@ class CustomDrawer extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => RequestsScreen()));
+                          builder: (context) => const RequestsScreen()));
                 },
               ),
-              const SizedBox(height: 15),
-              CustomListTile(
-                icon: Icons.calendar_month,
-                text: 'Agenda',
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RequestsScreen()));
-                },
-              ),
-              const SizedBox(height: 15),
+              // const SizedBox(height: 15),
+              // CustomListTile(
+              //   icon: Icons.calendar_month,
+              //   text: 'Agenda',
+              //   onTap: () {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context) => RequestsScreen()));
+              //   },
+              // ),
+              // const SizedBox(height: 15),
               // CustomListTile(
               //   icon: Icons.settings,
               //   text: 'Configurações',
@@ -202,7 +202,7 @@ class CustomDrawer extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    side: MaterialStatePropertyAll(BorderSide(color: Colors.red)),
+                    side: const MaterialStatePropertyAll(BorderSide(color: Colors.red)),
                     fixedSize: MaterialStateProperty.all(
                         Size(MediaQuery.of(context).size.width * 0.60, 50)),
                   ),
@@ -218,37 +218,6 @@ class CustomDrawer extends StatelessWidget {
             ],
           ),
         )
-        // Column(
-        //   mainAxisAlignment: MainAxisAlignment.end,
-        //   children: [
-        //     Padding(
-        //       padding: const EdgeInsets.all(15.0),
-        //       child: Center(
-        //         child: ElevatedButton(
-        //           onPressed: _showConfirmationDialog,
-        //           style: ButtonStyle(
-        //             shape: MaterialStatePropertyAll(
-        //               RoundedRectangleBorder(
-        //                 borderRadius: BorderRadius.circular(10.0),
-        //               ),
-        //             ),
-        //             backgroundColor:
-        //                 MaterialStateProperty.all<Color>(Colors.red),
-        //             fixedSize: MaterialStateProperty.all(
-        //                 Size(MediaQuery.of(context).size.width * 0.60, 50)),
-        //           ),
-        //           child: const Text(
-        //             'Sair',
-        //             style: TextStyle(
-        //                 color: Colors.white,
-        //                 fontSize: 22,
-        //                 fontFamily: 'BebasKai'),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // )
       ]),
     );
   }
