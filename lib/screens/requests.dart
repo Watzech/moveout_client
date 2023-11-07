@@ -28,6 +28,8 @@ class CustomIcons {
 }
 
 class _RequestsScreenState extends State<RequestsScreen> {
+  final TextEditingController _filterAddressTextController =
+      TextEditingController();
   List<Request> _rawRequests = [];
   List<Request> _filteredRequests = [];
   bool isFiltered = false;
@@ -89,26 +91,41 @@ class _RequestsScreenState extends State<RequestsScreen> {
       descending = false;
       ascendingIconColor = Colors.grey;
       ascending = false;
+      _filterAddressTextController.text = '';
     });
   }
 
-  void setFilters(String field, String orderBy) {
+  void setFilters(String field, String orderBy, String address) {
     List<Request> toFilter = List<Request>.from(_rawRequests);
-    if (orderBy == 'None') {
+
+    if (orderBy == 'None' && (address.isEmpty || address == '')) {
       resetFilters();
       return;
     }
-    if (field == 'Distância') {
-      orderBy == 'Asc'
-          ? toFilter.sort((a, b) => b.distance.compareTo(a.distance))
-          : toFilter.sort((a, b) => a.distance.compareTo(b.distance));
-    } else if (field == 'Valor') {
-      orderBy == 'Asc'
-          ? toFilter.sort(
-              (a, b) => b.price["finalPrice"].compareTo(a.price["finalPrice"]))
-          : toFilter.sort(
-              (a, b) => a.price["finalPrice"].compareTo(b.price["finalPrice"]));
+
+    if (orderBy != 'None') {
+      if (field == 'Distância') {
+        orderBy == 'Asc'
+            ? toFilter.sort((a, b) => b.distance.compareTo(a.distance))
+            : toFilter.sort((a, b) => a.distance.compareTo(b.distance));
+      } else if (field == 'Valor') {
+        orderBy == 'Asc'
+            ? toFilter.sort((a, b) =>
+                b.price["finalPrice"].compareTo(a.price["finalPrice"]))
+            : toFilter.sort((a, b) =>
+                a.price["finalPrice"].compareTo(b.price["finalPrice"]));
+      }
     }
+
+    if (!(address.isEmpty || address == '')) {
+      address = address.toLowerCase();
+      toFilter = toFilter.where((request) {
+        final String destination = request.destination['address'].toString().toLowerCase();
+        final String origin = request.origin['address'].toString().toLowerCase();
+        return (origin.contains(address) || destination.contains(address));
+      }).toList();
+    }
+
     setState(() {
       isFiltered = true;
       _filteredRequests = List<Request>.from(toFilter);
@@ -212,6 +229,57 @@ class _RequestsScreenState extends State<RequestsScreen> {
                             )),
                       ],
                     ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+                            child: Container(
+                              // width: MediaQuery.sizeOf(context).width * 0.5,
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                              decoration: BoxDecoration(
+                                // color: Theme.of(context).colorScheme.primary,
+                                border: Border.all(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: TextFormField(
+                                controller: _filterAddressTextController,
+                                style: TextStyle(
+                                    fontSize: fontSize,
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                                decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.all(1),
+                                    hintText: 'Pesquisar endereço...',
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none
+                                    // prefixIcon: Icon(
+                                    //   icon,
+                                    //   size: iconSize,
+                                    //   color: Theme.of(context).colorScheme.secondary,
+                                    // ),
+                                    // enabledBorder: OutlineInputBorder(
+                                    //   borderRadius:
+                                    //       const BorderRadius.all(Radius.circular(20)),
+                                    //   borderSide: BorderSide(
+                                    //       color: Theme.of(context).colorScheme.primary),
+                                    // ),
+                                    // border: OutlineInputBorder(
+                                    //   borderRadius:
+                                    //       const BorderRadius.all(Radius.circular(20)),
+                                    //   borderSide: BorderSide(
+                                    //       color: Theme.of(context).colorScheme.primary),
+                                    // ),
+                                    ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                       child: Row(
@@ -230,9 +298,14 @@ class _RequestsScreenState extends State<RequestsScreen> {
                             onPressed: () {
                               setState(() {
                                 String orderBy = 'None';
+                                String address = '';
                                 if (ascending) orderBy = 'Asc';
                                 if (descending) orderBy = 'Desc';
-                                setFilters(dropdownValue, orderBy);
+                                if (_filterAddressTextController
+                                    .text.isNotEmpty) {
+                                  address = _filterAddressTextController.text;
+                                }
+                                setFilters(dropdownValue, orderBy, address);
                               });
                               Navigator.pop(context);
                             },
