@@ -267,7 +267,7 @@ class _SingupTabBarState extends State<SingupTabBar> {
                                 /// At least one number
                                 /// At least one special character
                                 /// como demonstrar esses requisitos para o usuário?
-                                return 'Insira uma senha válida.';
+                                return 'Insira uma senha válida:\n- De 6 a 12 caracteres\n- Ao menos 1 letra maiúscula\n- Ao menos 1 letra minúscula\n- Ao menos 1 número\n- Ao menos 1 caracter especial';
                               }
                               return null;
                             },
@@ -292,7 +292,7 @@ class _SingupTabBarState extends State<SingupTabBar> {
                                 /// At least one number
                                 /// At least one special character
                                 /// como demonstrar esses requisitos para o usuário?
-                                return 'Insira uma senha válida.';
+                                return 'Insira uma senha válida:\n- De 6 a 12 caracteres\n- Ao menos 1 letra maiúscula\n- Ao menos 1 letra minúscula\n- Ao menos 1 número\n- Ao menos 1 caracter especial';
                               }
                               return null;
                             },
