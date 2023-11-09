@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'package:moveout1/services/notification_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:moveout1/screens/login.dart';
 
@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    prepareDeviceForNotification(context);
     return MaterialApp(
       title: 'MoveOut',
       //Day Theme Prototype:
@@ -48,6 +49,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  @override
+  void initState() { 
+    super.initState();
+    getNotification();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return AuthScreen();

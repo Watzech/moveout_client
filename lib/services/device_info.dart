@@ -4,27 +4,50 @@ import 'package:moveout1/database/request_db.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Save
-Future<void> loginSave(userInfo) async {
-
+Future<void> requestSave() async {
   try {
-
-    userInfo["userData"]["createdAt"] = userInfo["userData"]["createdAt"].toString();
-    userInfo["userData"]["updatedAt"] = userInfo["userData"]["updatedAt"].toString();
     var prefs = await SharedPreferences.getInstance();
-    var requests = await RequestDb.getInfoByField([userInfo["userData"]["cpf"]], "cpfClient");
+    var user = await getUserInfo();
+    var requests = await RequestDb.getInfoByField([user["cpf"]], "cpfClient");
 
     requests?.forEach((element) {
       element["createdAt"] = element["createdAt"].toString();
       element["updatedAt"] = element["updatedAt"].toString();
     });
 
-    await prefs.setString('userData', json.encode(userInfo["userData"]));
     await prefs.setString('requestData', json.encode(requests));
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future<void> loginSave(dynamic userInfo) async {
+
+  try {
+
+    userInfo["userData"]["createdAt"] = userInfo["userData"]["createdAt"].toString();
+    userInfo["userData"]["updatedAt"] = userInfo["userData"]["updatedAt"].toString();
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userData', json.encode(userInfo["userData"]));
+    await requestSave();
 
   } catch (e) {
     print(e);
   }
+}
 
+Future<void> saveNotificationToken(String? token) async{
+  
+  try {
+
+    if(token != null){
+      var prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+    }
+
+  } catch (e) {
+    print(e);
+  }
 }
 // Save
 
@@ -44,6 +67,20 @@ Future<dynamic> getRequestsInfo() async {
   final requests = prefs.getString("requestData") ?? "{}";
 
   return jsonDecode(requests);
+
+}
+
+Future<String?> getNotificationToken() async{
+  
+  try {
+
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+
+  } catch (e) {
+    print(e);
+    return null;
+  }
 
 }
 // Get

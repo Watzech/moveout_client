@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "558449699615",
+    "project_id": "moveout-c74de",
+    "storage_bucket": "moveout-c74de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558449699615:android:1b97ab2a679196fe331e2a",
+        "android_client_info": {
+          "package_name": "com.example.moveout1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXPRvqMoxTkzySieyYe1PSaAHy1s3fuyY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
