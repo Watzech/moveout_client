@@ -184,7 +184,9 @@ class LoginPhotoField extends StatefulWidget {
   _LoginPhotoFieldState createState() => _LoginPhotoFieldState(this.type);
 }
 
-class _LoginPhotoFieldState extends State<LoginPhotoField> {
+class _LoginPhotoFieldState extends State<LoginPhotoField> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
   var _image;
   var imagePicker;
   var type;
