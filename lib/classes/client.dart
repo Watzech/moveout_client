@@ -9,6 +9,7 @@ class Client {
   final String address;
   final DateTime createdAt;
   final DateTime updatedAt;
+  List<String?>? token = [];
 
   Client({
     required this.name,
@@ -20,6 +21,7 @@ class Client {
     required this.address,
     required this.createdAt,
     required this.updatedAt,
+    this.token
   });
 
   Map<String, dynamic> toMap() {
@@ -33,6 +35,7 @@ class Client {
       'address': address,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'token': token,
     };
   }
 
@@ -45,5 +48,6 @@ class Client {
     photo = map['photo'],
     address = map['address'],
     createdAt = map['createdAt'],
-    updatedAt = map['updatedAt'];
+    updatedAt = map['updatedAt'],
+    token = map['token'];
 }

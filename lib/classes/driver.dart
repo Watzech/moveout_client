@@ -2,14 +2,15 @@
 class Driver {
   final String name;
   final String cpf;
-  final String phone;
+  String phone;
   final String email;
   final String password;
-  final String photo;
-  final dynamic cnh;
-  final String address;
+  String photo;
+  final String cnh;
+  String address;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  DateTime updatedAt;
+  List<String?>? token;
 
   Driver({
     required this.name,
@@ -22,6 +23,7 @@ class Driver {
     required this.address,
     required this.createdAt,
     required this.updatedAt,
+    this.token,
   });
 
   Map<String, dynamic> toMap() {
@@ -36,6 +38,7 @@ class Driver {
       'address': address,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'token': token,
     };
   }
 
@@ -49,5 +52,6 @@ class Driver {
     cnh = map['cnh'],
     address = map['address'],
     createdAt = map['createdAt'],
-    updatedAt = map['updatedAt'];
+    updatedAt = map['updatedAt'],
+    token = map['token'];
 }
