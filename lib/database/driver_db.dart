@@ -69,6 +69,7 @@ class DriverDb{
     u?["cnh"] = driver.cnh;
     u?["address"] = driver.address;
     u?["updatedAt"] = driver.updatedAt;
+    u?["token"] = driver.token;
 
     await driverCollection?.replaceOne({"cnh": driver.cnh}, u!);
   }

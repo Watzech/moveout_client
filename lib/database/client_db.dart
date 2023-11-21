@@ -58,6 +58,7 @@ class ClientDb{
   }
 
   static update(Client client) async {
+    await connect();
     var u = await clientCollection?.findOne({"cpf": client.cpf});
 
     u?["name"] = client.name;
@@ -67,6 +68,7 @@ class ClientDb{
     u?["photo"] = client.photo;
     u?["address"] = client.address;
     u?["updatedAt"] = client.updatedAt;
+    u?["token"] = client.token;
 
     await clientCollection?.replaceOne({"cpf": client.cpf}, u!);
   }

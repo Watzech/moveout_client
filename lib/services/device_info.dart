@@ -39,10 +39,12 @@ Future<void> loginSave(dynamic userInfo) async {
 Future<void> saveNotificationToken(String? token) async{
   
   try {
+    var prefs = await SharedPreferences.getInstance();
+    var currentToken = await getNotificationToken();
 
-    if(token != null){
-      var prefs = await SharedPreferences.getInstance();
+    if(token != null && token != currentToken){
       await prefs.setString('token', token);
+      await removeUserInfo();
     }
 
   } catch (e) {

@@ -1,10 +1,8 @@
 import 'package:moveout1/database/driver_db.dart';
 
-Future<List<String>> getInterests(List<String> driversId) async{
+Future<List<Map<String, dynamic>>?> getInterests(List<String> driversId) async{
   DriverDb.connect();
-  List<String> drivers = DriverDb.getInfoByField(driversId, 'cnh') as List<String>;
-
-  print(drivers);
+  List<Map<String, dynamic>>? drivers = await DriverDb.getInfoByField(driversId, 'cnh');
 
   return drivers;
 }
