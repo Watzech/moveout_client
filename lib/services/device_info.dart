@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:moveout1/database/request_db.dart';
+import 'package:moveout1/services/transports.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Save
@@ -54,6 +55,23 @@ Future<void> saveNotificationToken(String? token) async{
 // Save
 
 // Get
+Future<double> getCurrentRating(cnh) async {
+  
+  double rating = 0;
+  var transportList = await getTransports(cnh);
+
+  if(transportList!.isEmpty){
+    return 0.0;
+  }
+
+  for(var transport in transportList){
+    rating += transport["rating"];
+  }
+  
+  return (rating / transportList.length);
+}
+
+
 Future<dynamic> getUserInfo() async {
 
   var prefs = await SharedPreferences.getInstance();

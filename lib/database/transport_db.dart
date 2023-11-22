@@ -43,6 +43,17 @@ class TransportDb{
     }
   }
 
+  static Future<List<Map<String, dynamic>>?> getInfoByField(List<String> values, String fieldName) async {
+    try {
+      await TransportDb.connect();
+      final transports = await transportCollection?.find(where.oneFrom(fieldName, values)).toList();
+      return transports;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   static insert(Transport transport) async {
     await connect();
     await transportCollection?.insertAll([transport.toMap()]);
