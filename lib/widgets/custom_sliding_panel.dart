@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:moveout1/services/do_request.dart';
+import 'package:moveout1/services/request.dart';
 import 'package:moveout1/services/get_price.dart';
 import 'package:moveout1/widgets/default_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';

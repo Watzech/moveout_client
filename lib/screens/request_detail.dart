@@ -284,7 +284,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       context,
                       PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) {
-                      return InterestedDriversScreen(interesteds: widget.request.interesteds);
+                      return InterestedDriversScreen(interesteds: widget.request.interesteds, request: widget.request);
                     },
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {

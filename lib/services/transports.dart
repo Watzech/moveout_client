@@ -1,4 +1,48 @@
+import 'package:mongo_dart/mongo_dart.dart';
+import 'package:moveout1/classes/driver.dart';
+import 'package:moveout1/classes/request.dart';
+import 'package:moveout1/classes/transport.dart';
+import 'package:moveout1/database/request_db.dart';
 import 'package:moveout1/database/transport_db.dart';
+import 'package:moveout1/services/device_info.dart';
+import 'package:http/http.dart' as http;
+
+Future<void> setDriver(Request request, Driver driver) async {
+
+  await RequestDb.update(request);
+  dynamic user = await getUserInfo();
+
+  Transport transport = Transport(
+    request: request.id,
+    vehicle: null,
+    driver: driver.cnh,
+    client: ObjectId.parse(user["_id"]),
+    situation: "Pending",
+    rating: 0,
+    scheduledAt: request.date,
+    finishedAt: null,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now()
+  );
+
+  await TransportDb.insert(transport);
+  await changeRequestSituation(request.id, "AG");
+
+  String title = "Você foi escolhido para um transporte";
+  String desc = "Clique para acessar!";
+  List<dynamic>? tokens = driver.token;
+  
+  if(tokens != null){
+    for(var token in tokens){
+      try {
+        http.get(Uri.https("us-central1-moveout-c74de.cloudfunctions.net", "sendMessage", {"token": token, "title": title, "body": desc}));
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+}
 
 Future<List<Map<String, dynamic>>?> getTransports(cnh) async {
 
@@ -13,4 +57,19 @@ Future<List<Map<String, dynamic>>?> getTransports(cnh) async {
     return null;
   }
 
+}
+
+double getCurrentRating(transportList) {
+  
+  double rating = 0;
+
+  if(transportList == null || transportList!.isEmpty){
+    return 0.0;
+  }
+
+  for(var transport in transportList){
+    rating += transport["rating"];
+  }
+  
+  return (rating / transportList.length);
 }

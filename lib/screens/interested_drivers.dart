@@ -3,7 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:moveout1/classes/driver.dart';
+import 'package:moveout1/classes/request.dart';
+import 'package:moveout1/classes/transport.dart';
 import 'package:moveout1/services/get_interest.dart';
+import 'package:moveout1/services/transports.dart';
 import 'package:moveout1/widgets/driver_card.dart';
 import 'package:moveout1/widgets/profile_image_container.dart';
 import 'package:moveout1/widgets/sliding_panel_widgets/custom_divider.dart';
@@ -13,9 +16,11 @@ class InterestedDriversScreen extends StatefulWidget {
   const InterestedDriversScreen({
     super.key,
     required this.interesteds,
+    required this.request
   });
 
   final List<dynamic> interesteds;
+  final Request request;
 
   @override
   State<InterestedDriversScreen> createState() =>
@@ -24,15 +29,18 @@ class InterestedDriversScreen extends StatefulWidget {
 
 class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
   List<Driver> _driverArray = [];
+  List<List<Transport>?> _transportsArray = [];
+  List<double> _ratingArray = [];
   bool _isLoading = true;
+  late Request _request;
 
-  void showDriverDialog(BuildContext context, Driver driver) {
+  void showDriverDialog(BuildContext context, Driver driver, List<Transport>? transportsList, double rating, Request request) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           List<String> filterOptions = <String>['Distância', 'Valor'];
           double fontSize = MediaQuery.of(context).size.height * 0.022;
-
+          int transport = transportsList != null ? transportsList.length : 0;
           return AlertDialog(
             content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
@@ -65,7 +73,7 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                         padding: const EdgeInsets.fromLTRB(15,0,15,15),
                         child: RatingBar.builder(
                           // initialRating: rating,
-                          initialRating: 2.5,
+                          initialRating: rating,
                           allowHalfRating: true,
                           minRating: 0,
                           direction: Axis.horizontal,
@@ -84,7 +92,7 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                       ),
                     ),
                     CustomSummarySubtextRow(title: 'Telefone:', text: driver.phone),
-                    CustomSummarySubtextRow(title: 'Transportes realizados:', text: 12.toString()),
+                    CustomSummarySubtextRow(title: 'Transportes realizados:', text: transport.toString()),
                     CustomSummarySubtextRow(title: 'Membro desde:', text: '${driver.createdAt.month}/${driver.createdAt.year}'),
 
                     Padding(
@@ -99,8 +107,10 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                             child: const Text('Voltar'),
                           ),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              request.status = "AG";
                               Navigator.pop(context);
+                              await setDriver(request, driver);
                             },
                             child: const Text('Aceitar Motorista'),
                           ),
@@ -120,16 +130,33 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       List<Map<String, dynamic>>? map = await getInterests(widget.interesteds);
+      Request request = widget.request;
 
       List<Driver> interestedDrivers = [];
+      List<List<Transport>> interestedDriversTransports = [];
+      List<double> interestedDriversRating = [];
       if (map != null) {
         for (var element in map) {
+          dynamic transport = await getTransports(element["cnh"]);
+          double rating = getCurrentRating(transport);
           interestedDrivers.add(Driver.fromMap(element));
+          
+          if(transport != null){
+            List<Transport> list = [];
+            for(var transportItem in transport){
+              list.add(Transport.fromMap(transportItem));
+            }
+            interestedDriversTransports.add(list);
+          }
+          interestedDriversRating.add(rating);
         }
       }
       setState(() {
         _driverArray = interestedDrivers;
+        _transportsArray = interestedDriversTransports;
+        _ratingArray = interestedDriversRating;
         _isLoading = false;
+        _request = request;
       });
     });
   }
@@ -184,13 +211,15 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                             itemCount: _driverArray.length,
                             itemBuilder: (context, index) {
                               final item = _driverArray[index];
+                              final itemTransport = _transportsArray[index]!.isNotEmpty ? _transportsArray[index] : null;
+                              final itemRating = _ratingArray[index];
                               return Column(
                                 children: [
                                   InkWell(
                                       onTap: () {
-                                        showDriverDialog(context, item);
+                                        showDriverDialog(context, item, itemTransport, itemRating, _request);
                                       },
-                                      child: DriverCard(driver: item)),
+                                      child: DriverCard(driver: item, rating: itemRating, transports: itemTransport)),
                                   const CustomDivider(),
                                 ],
                               );

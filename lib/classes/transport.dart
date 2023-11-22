@@ -1,25 +1,23 @@
 
-import 'package:moveout1/classes/client.dart';
-import 'package:moveout1/classes/driver.dart';
-import 'package:moveout1/classes/request.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:moveout1/classes/vehicle.dart';
 
-enum Situation {
-  running,
-  completed,
-  pending,
-  canceled
-}
+// enum Situation {
+//   running,
+//   completed,
+//   pending,
+//   canceled
+// }
 
 class Transport {
-  final Request request;
-  final Vehicle vehicle;
-  final Driver driver;
-  final Client client;
-  Situation situation;
+  final ObjectId request;
+  final Vehicle? vehicle;
+  final String driver;
+  final ObjectId client;
+  String situation;
   int rating = 0;
-  DateTime scheduledAt;
-  DateTime finishedAt;
+  List<dynamic> scheduledAt;
+  DateTime? finishedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
 

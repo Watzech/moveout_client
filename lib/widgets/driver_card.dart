@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:moveout1/classes/driver.dart';
+import 'package:moveout1/classes/transport.dart';
 import 'package:moveout1/widgets/profile_image_container.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class DriverCard extends StatelessWidget {
   final Driver driver;
+  final List<Transport>? transports;
+  final double rating;
 
   const DriverCard(
-      {super.key,
-      required this.driver
-      });
+    {super.key,
+      required this.driver,
+      required this.transports,
+      required this.rating
+    }
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +109,7 @@ class DriverCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           //driver.origin["address"],
-                          10.toString(),
+                          transports != null ? transports!.length.toString() : 0.toString(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -142,7 +148,7 @@ class DriverCard extends StatelessWidget {
                     children: [
                       RatingBar.builder(
                         // initialRating: rating,
-                        initialRating: 2.5,
+                        initialRating: rating,
                         allowHalfRating: true,
                         minRating: 0,
                         direction: Axis.horizontal,
