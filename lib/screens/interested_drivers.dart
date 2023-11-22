@@ -82,33 +82,37 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
           ),
         ),
       ),
-      body: _driverArray.isEmpty
-          ? const Center(
-              child: Text(
-                'Ainda nenhum motorista se interessou nesse pedido.',
-                style: TextStyle(fontSize: 20, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-            )
-          : Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(0),
-                itemCount: _driverArray.length,
-                itemBuilder: (context, index) {
-                  final item = _driverArray[index];
-                  return Column(
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            // Navigator.of(context).push(_createRoute(item));
-                          },
-                          child: DriverCard(driver: item)),
-                      const CustomDivider(),
-                    ],
-                  );
-                },
-              ),
-            ),
+      body: Column(
+        children: [
+          _driverArray.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Ainda nenhum motorista se interessou nesse pedido.',
+                    style: TextStyle(fontSize: 20, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(0),
+                    itemCount: _driverArray.length,
+                    itemBuilder: (context, index) {
+                      final item = _driverArray[index];
+                      return Column(
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                // Navigator.of(context).push(_createRoute(item));
+                              },
+                              child: DriverCard(driver: item)),
+                          const CustomDivider(),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+        ],
+      ),
     );
   }
 }

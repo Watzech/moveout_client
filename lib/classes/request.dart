@@ -49,18 +49,18 @@ class Request {
     };
   }
 
-  Request.fromMap(Map<String, dynamic> map)
-      : id = ObjectId.parse(map['_id']),
-        cpfClient = map['cpfClient'],
-        price = map['price'],
-        origin = map['origin'],
-        destination = map['destination'],
-        distance = map['distance'],
-        interesteds = map['interesteds'],
-        date = map['date'],
-        helpers = map['helpers'],
-        load = map['load'],
-        createdAt = DateTime.parse(map['createdAt']),
-        updatedAt = DateTime.parse(map['updatedAt']),
-        status = map['status'];
+  Request.fromMap(Map<String, dynamic> map):
+    id = ObjectId.parse(map['_id']),
+    cpfClient = map['cpfClient'],
+    price = map['price'],
+    origin = map['origin'],
+    destination = map['destination'],
+    distance = map['distance'],
+    interesteds = map['interesteds'],
+    date = map['date'],
+    helpers = map['helpers'],
+    load = map['load'],
+    createdAt = DateTime.parse(map['createdAt']),
+    updatedAt = DateTime.parse(map['updatedAt']),
+    status = map['status'];
 }
