@@ -45,6 +45,7 @@ class DriverDb{
 
   static Future<List<Map<String, dynamic>>?> getInfoByField(List<dynamic> values, String fieldName) async {
     try {
+      await connect();
       final itemList = await driverCollection?.find(where.oneFrom(fieldName, values)).toList();
       return itemList;
     } catch (e) {
