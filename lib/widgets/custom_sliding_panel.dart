@@ -207,7 +207,7 @@ class _CustomSlidingPanelState extends State<CustomSlidingPanel> {
 
     quoteInfo["cpf"] = widget.userData['cpf'];
     setState(() {
-      if(quoteInfo["error"] == null){
+      if (quoteInfo["error"] == null) {
         _quote = quoteInfo;
       }
     });
@@ -280,6 +280,7 @@ class _CustomSlidingPanelState extends State<CustomSlidingPanel> {
       widget.panelController.close();
       FocusManager.instance.primaryFocus?.unfocus();
     } else {
+      _buttonValidate();
       widget.panelController.open();
     }
   }
@@ -735,6 +736,7 @@ class _CustomSlidingPanelState extends State<CustomSlidingPanel> {
     widget.secondDateController.addListener(() {
       if (widget.secondDateController.text.isNotEmpty) _buttonValidate();
     });
+    _buttonValidate();
   }
 
   @override

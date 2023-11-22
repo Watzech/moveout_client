@@ -37,6 +37,10 @@ class _RequestsScreenState extends State<RequestsScreen> {
   bool descending = false;
   Color descendingIconColor = Colors.grey;
   Color ascendingIconColor = Colors.grey;
+  String transportSize = ' ';
+  Color sColor = Colors.grey;
+  Color mColor = Colors.grey;
+  Color lColor = Colors.grey;
   String dropdownValue = 'Distância';
 
   Route _createRoute(Request item) {
@@ -83,6 +87,56 @@ class _RequestsScreenState extends State<RequestsScreen> {
     ascending = false;
   }
 
+  void changeTruckSize(String value) {
+    switch (value) {
+      case 'S':
+        if (transportSize == value) {
+          setState(() {
+            sColor = Colors.grey;
+            transportSize = ' ';
+          });
+          break;
+        }
+        setState(() {
+          sColor = Theme.of(context).colorScheme.primary;
+          mColor = Colors.grey;
+          lColor = Colors.grey;
+        });
+        transportSize = 'S';
+        break;
+      case 'M':
+        if (transportSize == value) {
+          setState(() {
+            mColor = Colors.grey;
+            transportSize = ' ';
+          });
+          break;
+        }
+        setState(() {
+          sColor = Colors.grey;
+          mColor = Theme.of(context).colorScheme.primary;
+          lColor = Colors.grey;
+        });
+        transportSize = 'M';
+        break;
+      case 'L':
+        if (transportSize == value) {
+          setState(() {
+            lColor = Colors.grey;
+            transportSize = ' ';
+          });
+          break;
+        }
+        setState(() {
+          sColor = Colors.grey;
+          mColor = Colors.grey;
+          lColor = Theme.of(context).colorScheme.primary;
+        });
+        transportSize = 'L';
+        break;
+    }
+  }
+
   void resetFilters() {
     setState(() {
       isFiltered = false;
@@ -92,13 +146,19 @@ class _RequestsScreenState extends State<RequestsScreen> {
       ascendingIconColor = Colors.grey;
       ascending = false;
       _filterAddressTextController.text = '';
+      transportSize = ' ';
+      sColor = Colors.grey;
+      mColor = Colors.grey;
+      lColor = Colors.grey;
     });
   }
 
   void setFilters(String field, String orderBy, String address) {
     List<Request> toFilter = List<Request>.from(_rawRequests);
 
-    if (orderBy == 'None' && (address.isEmpty || address == '')) {
+    if (orderBy == 'None' &&
+        (address.isEmpty || address == '') &&
+        transportSize == ' ') {
       resetFilters();
       return;
     }
@@ -120,10 +180,35 @@ class _RequestsScreenState extends State<RequestsScreen> {
     if (!(address.isEmpty || address == '')) {
       address = address.toLowerCase();
       toFilter = toFilter.where((request) {
-        final String destination = request.destination['address'].toString().toLowerCase();
-        final String origin = request.origin['address'].toString().toLowerCase();
+        final String destination =
+            request.destination['address'].toString().toLowerCase();
+        final String origin =
+            request.origin['address'].toString().toLowerCase();
         return (origin.contains(address) || destination.contains(address));
       }).toList();
+    }
+
+    if (transportSize != ' ') {
+      switch (transportSize) {
+        case 'S':
+          toFilter = toFilter.where((request) {
+            return (request.price["truckSize"] == 'Small');
+          }).toList();
+          break;
+        case 'M':
+          toFilter = toFilter.where((request) {
+            return (request.price["truckSize"] == 'Medium');
+          }).toList();
+          break;
+        case 'L':
+          toFilter = toFilter.where((request) {
+            return (request.price["truckSize"] == 'Large');
+          }).toList();
+          break;
+        default:
+          transportSize = ' ';
+          break;
+      }
     }
 
     setState(() {
@@ -137,7 +222,8 @@ class _RequestsScreenState extends State<RequestsScreen> {
         context: context,
         builder: (BuildContext context) {
           List<String> filterOptions = <String>['Distância', 'Valor'];
-          double fontSize = MediaQuery.of(context).size.height * 0.022;
+          double fontSize = MediaQuery.of(context).size.height * 0.018;
+          double iconSize = MediaQuery.of(context).size.height * 0.03;
 
           return AlertDialog(
             content: StatefulBuilder(
@@ -255,29 +341,49 @@ class _RequestsScreenState extends State<RequestsScreen> {
                                     contentPadding: EdgeInsets.all(1),
                                     hintText: 'Pesquisar endereço...',
                                     hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none
-                                    // prefixIcon: Icon(
-                                    //   icon,
-                                    //   size: iconSize,
-                                    //   color: Theme.of(context).colorScheme.secondary,
-                                    // ),
-                                    // enabledBorder: OutlineInputBorder(
-                                    //   borderRadius:
-                                    //       const BorderRadius.all(Radius.circular(20)),
-                                    //   borderSide: BorderSide(
-                                    //       color: Theme.of(context).colorScheme.primary),
-                                    // ),
-                                    // border: OutlineInputBorder(
-                                    //   borderRadius:
-                                    //       const BorderRadius.all(Radius.circular(20)),
-                                    //   borderSide: BorderSide(
-                                    //       color: Theme.of(context).colorScheme.primary),
-                                    // ),
-                                    ),
+                                    border: InputBorder.none),
                               ),
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                changeTruckSize('S');
+                              });
+                            },
+                            icon: Icon(
+                              CustomIcons.truckPickup,
+                              color: sColor,
+                              size: iconSize,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                changeTruckSize('M');
+                              });
+                            },
+                            icon: Icon(
+                              CustomIcons.truck,
+                              color: mColor,
+                              size: iconSize,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                changeTruckSize('L');
+                              });
+                            },
+                            icon: Icon(
+                              CustomIcons.truckMoving,
+                              color: lColor,
+                              size: iconSize,
+                            )),
                       ],
                     ),
                     Padding(
