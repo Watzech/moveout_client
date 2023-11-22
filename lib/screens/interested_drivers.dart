@@ -21,6 +21,7 @@ class InterestedDriversScreen extends StatefulWidget {
 
 class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
   List<Driver> _driverArray = [];
+  bool _isLoading = true;
 
   // Route _createRoute(Driver item) {
   //   return PageRouteBuilder(
@@ -56,6 +57,7 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
       }
       setState(() {
         _driverArray = interestedDrivers;
+        _isLoading = false;
       });
     });
   }
@@ -63,56 +65,67 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.arrow_back_sharp,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: const Text(
+            'Motoristas interessados',
+            style: TextStyle(
+                fontFamily: 'BebasKai', fontSize: 30, color: Colors.white),
+          ),
+          leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back_sharp,
+                color: Theme.of(context).colorScheme.secondary,
+                size: 30,
+              )),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
               color: Theme.of(context).colorScheme.secondary,
-              size: 30,
-            )),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0),
-          child: Container(
-            color: Theme.of(context).colorScheme.secondary,
-            height: 2.0,
+              height: 2.0,
+            ),
           ),
         ),
-      ),
-      body: Column(
-        children: [
-          _driverArray.isEmpty
-              ? const Center(
-                  child: Text(
-                    'Ainda nenhum motorista se interessou nesse pedido.',
-                    style: TextStyle(fontSize: 20, color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(0),
-                    itemCount: _driverArray.length,
-                    itemBuilder: (context, index) {
-                      final item = _driverArray[index];
-                      return Column(
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                // Navigator.of(context).push(_createRoute(item));
-                              },
-                              child: DriverCard(driver: item)),
-                          const CustomDivider(),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-        ],
-      ),
-    );
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                    // backgroundColor: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
+                    ),
+              )
+            : Column(
+                children: [
+                  _driverArray.isEmpty
+                      ? const Center(
+                          child: Text(
+                            'Ainda nenhum motorista se interessou nesse pedido.',
+                            style: TextStyle(fontSize: 20, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(0),
+                            itemCount: _driverArray.length,
+                            itemBuilder: (context, index) {
+                              final item = _driverArray[index];
+                              return Column(
+                                children: [
+                                  InkWell(
+                                      onTap: () {
+                                        // Navigator.of(context).push(_createRoute(item));
+                                      },
+                                      child: DriverCard(driver: item)),
+                                  const CustomDivider(),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                ],
+              ));
   }
 }
