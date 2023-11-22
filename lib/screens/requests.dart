@@ -375,6 +375,8 @@ class _RequestsScreenState extends State<RequestsScreen> {
           ],
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _rawRequests.isEmpty
                 ? const Center(

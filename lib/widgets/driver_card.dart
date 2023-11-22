@@ -61,7 +61,7 @@ class DriverCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(0, 8, 10, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
@@ -89,25 +89,28 @@ class DriverCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  
                   Row(
                     children: [
-                      RatingBar.builder(
-                        // initialRating: rating,
-                        initialRating: 2.5,
-                        allowHalfRating: true,
-                        minRating: 0,
-                        direction: Axis.horizontal,
-                        ignoreGestures: true,
-                        itemSize: 18,
-                        itemCount: 5,
-                        itemPadding:
-                            const EdgeInsets.symmetric(horizontal: 3.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          size: 1,
-                          color: Theme.of(context).colorScheme.secondary,
+                      Text(
+                        'Transportes feitos: ',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.bold,
                         ),
-                        onRatingUpdate: (value) {},
+                      ),
+                      Expanded(
+                        child: Text(
+                          //driver.origin["address"],
+                          10.toString(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -135,30 +138,28 @@ class DriverCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Row(
-                  //   children: [
-                  //     Text(
-                  //       'Destino: ',
-                  //       style: TextStyle(
-                  //         fontSize: 12,
-                  //         color: Colors.grey.shade600,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //     Expanded(
-                  //       child: Text(
-                  //         // driver.destination["address"],
-                  //         'Teste',
-                  //         maxLines: 1,
-                  //         overflow: TextOverflow.ellipsis,
-                  //         style: TextStyle(
-                  //           fontSize: 12,
-                  //           color: Colors.grey.shade500,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  Row(
+                    children: [
+                      RatingBar.builder(
+                        // initialRating: rating,
+                        initialRating: 2.5,
+                        allowHalfRating: true,
+                        minRating: 0,
+                        direction: Axis.horizontal,
+                        ignoreGestures: true,
+                        itemSize: 18,
+                        itemCount: 5,
+                        itemPadding:
+                            const EdgeInsets.symmetric(horizontal: 3.0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          size: 1,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        onRatingUpdate: (value) {},
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

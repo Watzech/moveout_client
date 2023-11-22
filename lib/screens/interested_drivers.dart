@@ -1,10 +1,13 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:moveout1/classes/driver.dart';
 import 'package:moveout1/services/get_interest.dart';
 import 'package:moveout1/widgets/driver_card.dart';
+import 'package:moveout1/widgets/profile_image_container.dart';
 import 'package:moveout1/widgets/sliding_panel_widgets/custom_divider.dart';
+import 'package:moveout1/widgets/sliding_panel_widgets/custom_summary_subtext_row.dart';
 
 class InterestedDriversScreen extends StatefulWidget {
   const InterestedDriversScreen({
@@ -23,25 +26,94 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
   List<Driver> _driverArray = [];
   bool _isLoading = true;
 
-  // Route _createRoute(Driver item) {
-  //   return PageRouteBuilder(
-  //     pageBuilder: (context, animation, secondaryAnimation) =>
-  //         RequestDetailScreen(request: item),
-  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-  //       const begin = Offset(0.0, 1.0);
-  //       const end = Offset.zero;
-  //       const curve = Curves.ease;
+  void showDriverDialog(BuildContext context, Driver driver) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          List<String> filterOptions = <String>['Distância', 'Valor'];
+          double fontSize = MediaQuery.of(context).size.height * 0.022;
 
-  //       var tween =
-  //           Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          return AlertDialog(
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Center(
+                        child: Column(
+                      children: [
+                        ImageContainer(
+                          photoString: driver.photo,
+                          imageSize: MediaQuery.sizeOf(context).height * 0.18,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            driver.name,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontSize: 25,
+                              fontFamily: 'BebasKai'
+                            ),
+                          ),
+                        )
+                      ],
+                    )),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(15,0,15,15),
+                        child: RatingBar.builder(
+                          // initialRating: rating,
+                          initialRating: 2.5,
+                          allowHalfRating: true,
+                          minRating: 0,
+                          direction: Axis.horizontal,
+                          ignoreGestures: true,
+                          itemSize: MediaQuery.sizeOf(context).width * 0.075,
+                          itemCount: 5,
+                          itemPadding:
+                              const EdgeInsets.symmetric(horizontal: 3.0),
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            size: 1,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          onRatingUpdate: (value) {},
+                        ),
+                      ),
+                    ),
+                    CustomSummarySubtextRow(title: 'Telefone:', text: driver.phone),
+                    CustomSummarySubtextRow(title: 'Transportes realizados:', text: 12.toString()),
+                    CustomSummarySubtextRow(title: 'Membro desde:', text: '${driver.createdAt.month}/${driver.createdAt.year}'),
 
-  //       return SlideTransition(
-  //         position: animation.drive(tween),
-  //         child: child,
-  //       );
-  //     },
-  //   );
-  // }
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Voltar'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Aceitar Motorista'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        });
+  }
 
   @override
   void initState() {
@@ -92,9 +164,9 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
         body: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
-                    // backgroundColor: Theme.of(context).colorScheme.primary,
-                    color: Theme.of(context).colorScheme.secondary,
-                    ),
+                  // backgroundColor: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               )
             : Column(
                 children: [
@@ -116,7 +188,7 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                                 children: [
                                   InkWell(
                                       onTap: () {
-                                        // Navigator.of(context).push(_createRoute(item));
+                                        showDriverDialog(context, item);
                                       },
                                       child: DriverCard(driver: item)),
                                   const CustomDivider(),
