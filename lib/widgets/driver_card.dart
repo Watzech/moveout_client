@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moveout1/classes/driver.dart';
+import 'package:moveout1/widgets/profile_image_container.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class DriverCard extends StatelessWidget {
   final Driver driver;
@@ -16,28 +18,28 @@ class DriverCard extends StatelessWidget {
       width: MediaQuery.sizeOf(context).width,
       child: Row(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  width: 8,
-                  child: ColoredBox(color: Theme.of(context).colorScheme.secondary),
-                ),
-              ),
-            ],
-          ),
+          // Column(
+          //   children: [
+          //     Expanded(
+          //       child: SizedBox(
+          //         width: 8,
+          //         child: ColoredBox(color: Theme.of(context).colorScheme.secondary),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.fromLTRB(15,15,10,15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.person_outline,
-                  // color: Theme.of(context).colorScheme.secondary,
-                  color: Theme.of(context).colorScheme.secondary,
-                  size: 50,
-                ),
+                // Icon(
+                //   Icons.person_outline,
+                //   color: Theme.of(context).colorScheme.secondary,
+                //   size: 50,
+                // ),
+                ImageContainer(photoString: driver.photo, imageSize: 80),
               ],
             ),
           ),
@@ -59,6 +61,7 @@ class DriverCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(0, 8, 10, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Row(
                     children: [
@@ -77,82 +80,85 @@ class DriverCard extends StatelessWidget {
                         size: 5,
                       ),
                       Text(
-                        'Test',
+                        ' ${driver.name}',
                         style: TextStyle(
                           fontFamily: 'BebasKai',
-                          fontSize: 20,
+                          fontSize: 21,
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Origem: ',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  Row(
+                    children: [
+                      RatingBar.builder(
+                        // initialRating: rating,
+                        initialRating: 2.5,
+                        allowHalfRating: true,
+                        minRating: 0,
+                        direction: Axis.horizontal,
+                        ignoreGestures: true,
+                        itemSize: 18,
+                        itemCount: 5,
+                        itemPadding:
+                            const EdgeInsets.symmetric(horizontal: 3.0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          size: 1,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
-                        Expanded(
-                          child: Text(
-                            //driver.origin["address"],
-                            'Teste',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Destino: ',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            // driver.destination["address"],
-                            'Teste',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                        onRatingUpdate: (value) {},
+                      ),
+                    ],
                   ),
                   Row(
                     children: [
                       Text(
-                        // reaisFormatter.format(driver.price["finalPrice"]),
-                        'Teste',
+                        'Telefone: ',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade600,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Expanded(
+                        child: Text(
+                          //driver.origin["address"],
+                          driver.phone,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      ),
                     ],
-                  )
+                  ),
+                  // Row(
+                  //   children: [
+                  //     Text(
+                  //       'Destino: ',
+                  //       style: TextStyle(
+                  //         fontSize: 12,
+                  //         color: Colors.grey.shade600,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Text(
+                  //         // driver.destination["address"],
+                  //         'Teste',
+                  //         maxLines: 1,
+                  //         overflow: TextOverflow.ellipsis,
+                  //         style: TextStyle(
+                  //           fontSize: 12,
+                  //           color: Colors.grey.shade500,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
