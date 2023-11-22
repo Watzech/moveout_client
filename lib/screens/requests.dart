@@ -330,19 +330,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
 
       List<Request> req = [];
       requestsByUser?.forEach((element) {
-        req.add(Request(
-            id: ObjectId.parse(element['_id']),
-            cpfClient: element['cpfClient'],
-            price: element['price'],
-            origin: element['origin'],
-            destination: element['destination'],
-            distance: element['distance'],
-            date: element['date'],
-            helpers: element['helpers'],
-            load: element['load'],
-            createdAt: DateTime.parse(element['createdAt']),
-            updatedAt: DateTime.parse(element['updatedAt']),
-            status: element['status']));
+        req.add(Request.fromMap(element));
       });
       setState(() {
         _rawRequests = req;

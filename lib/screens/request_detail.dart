@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:moveout1/screens/interested_drivers.dart';
 import 'package:moveout1/services/delete_request.dart';
 import 'package:moveout1/widgets/default_button.dart';
 import 'package:moveout1/widgets/sliding_panel_widgets/custom_summary_subtext_row.dart';
@@ -274,6 +275,50 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 color: Theme.of(context).colorScheme.secondary,
                 size: 30,
               )),
+          actions:[
+            Padding(
+              padding: EdgeInsets.only(right: MediaQuery.sizeOf(context).width * 0.03),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      return InterestedDriversScreen(interesteds: widget.request.interesteds);
+                    },
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(1.0, 0.0);
+                      const end = Offset.zero;
+                      const curve = Curves.ease;
+                      var tween = Tween(begin: begin, end: end).chain(
+                        CurveTween(curve: curve),
+                      );
+                      var offsetAnimation = animation.drive(tween);
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                  ));
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.person_sharp,
+                      color: Theme.of(context).colorScheme.secondary,
+                      size: 30,
+                    ),
+                    Icon(
+                      Icons.arrow_right,
+                      color: Theme.of(context).colorScheme.secondary,
+                      size: 20,
+                    ),
+                  ],
+                )),
+            ),
+          ] ,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4.0),
             child: Container(

@@ -8,7 +8,7 @@ class Request {
   dynamic destination;
   dynamic distance;
   bool helpers;
-  List<String> interesteds = [];
+  List<dynamic> interesteds = [];
   List<dynamic> date = [];
   Map<dynamic, dynamic> load;
   final DateTime createdAt;
@@ -16,19 +16,20 @@ class Request {
   String status;
 
   Request({
-      required this.id,
-      required this.cpfClient,
-      required this.price,
-      required this.origin,
-      required this.destination,
-      required this.distance,
-      required this.date,
-      required this.helpers,
-      required this.load,
-      required this.createdAt,
-      required this.updatedAt,
-      required this.status,
-      });
+    required this.id,
+    required this.cpfClient,
+    required this.price,
+    required this.origin,
+    required this.destination,
+    required this.distance,
+    required this.interesteds,
+    required this.date,
+    required this.helpers,
+    required this.load,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.status,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -49,17 +50,17 @@ class Request {
   }
 
   Request.fromMap(Map<String, dynamic> map)
-      : id = map['_id'],
+      : id = ObjectId.parse(map['_id']),
         cpfClient = map['cpfClient'],
         price = map['price'],
         origin = map['origin'],
         destination = map['destination'],
         distance = map['distance'],
-        helpers = map['helpers'],
         interesteds = map['interesteds'],
         date = map['date'],
+        helpers = map['helpers'],
         load = map['load'],
-        createdAt = map['createdAt'],
-        status = map['status'],
-        updatedAt = map['updatedAt'];
+        createdAt = DateTime.parse(map['createdAt']),
+        updatedAt = DateTime.parse(map['updatedAt']),
+        status = map['status'];
 }

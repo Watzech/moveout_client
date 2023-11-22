@@ -11,6 +11,7 @@ Future<void> doRequest(dynamic requestData) async {
       origin: requestData["origin"],
       destination: requestData["destination"],
       distance: requestData["distance"],
+      interesteds: requestData["interesteds"],
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       cpfClient: requestData["cpf"],
