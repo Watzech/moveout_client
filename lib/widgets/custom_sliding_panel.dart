@@ -207,7 +207,9 @@ class _CustomSlidingPanelState extends State<CustomSlidingPanel> {
 
     quoteInfo["cpf"] = widget.userData['cpf'];
     setState(() {
-      _quote = quoteInfo;
+      if(quoteInfo["error"] == null){
+        _quote = quoteInfo;
+      }
     });
   }
 
