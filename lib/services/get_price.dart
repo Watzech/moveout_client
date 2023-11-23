@@ -55,7 +55,8 @@ Future<Map<String, dynamic>> getPrice(dynamic info, double distance) async {
   place["valueByHelper"] = helper;
   place["wrapping"] = wrap;
   place["distance"] = distance;
-  place["finalPrice"] = (km * 2) * distance + (obj * plus) + truck + helper + wrap;
+  place["finalPrice"] =
+      (km * 2) * distance + (obj * plus) + truck + helper + wrap;
 
   return place;
 }
@@ -94,12 +95,15 @@ Future<Map<String, dynamic>> getQuote(
 
       quote["destination"] = {};
       quote["destination"]["address"] = data["destination_addresses"][0];
-      quote["destination"]["state"] = getState(data["destination_addresses"][0]);
+      quote["destination"]["state"] =
+          getState(data["destination_addresses"][0]);
       quote["destination"]["lat"] = toPlace["latitude"];
       quote["destination"]["long"] = toPlace["longitude"];
 
       quote["date"] = [info["date"][0], info["date"][1]];
       quote["load"] = info["load"];
+
+      quote["interesteds"] = [];
 
       return quote;
     } else {
