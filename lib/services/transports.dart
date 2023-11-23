@@ -45,12 +45,13 @@ Future<void> setDriver(Request request, Driver driver) async {
 
 }
 
-Future<bool> endTransport(Request request) async {
+Future<bool> endTransport(Request request, int rating) async {
   
   try {
     dynamic transportMap = await getTransport(request.id);
     Transport transport = Transport.fromMap(transportMap);
     transport.situation = "Completed";
+    transport.rating = rating;
 
     await TransportDb.update(transport);
     await RequestDb.update(request);
