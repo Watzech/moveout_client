@@ -56,8 +56,8 @@ class Transport {
     client = map['client'],
     situation = map['situation'],
     rating = map['rating'],
-    scheduledAt = map['scheduledAt'],
-    finishedAt = map['finishedAt'],
-    createdAt = map['createdAt'],
-    updatedAt = map['updatedAt'];
+    scheduledAt = map['scheduledAt'].runtimeType == String ? DateTime.parse(map['scheduledAt']) : map['scheduledAt'],
+    finishedAt = map['finishedAt'].runtimeType == String ? DateTime.parse(map['finishedAt']) : map['finishedAt'],
+    createdAt = map['createdAt'].runtimeType == String ? DateTime.parse(map['createdAt']) : map['createdAt'],
+    updatedAt = map['updatedAt'].runtimeType == String ? DateTime.parse(map['updatedAt']) : map['updatedAt'];
 }

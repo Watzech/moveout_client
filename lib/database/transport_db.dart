@@ -43,7 +43,7 @@ class TransportDb{
     }
   }
 
-  static Future<List<Map<String, dynamic>>?> getInfoByField(List<String> values, String fieldName) async {
+  static Future<List<Map<String, dynamic>>?> getInfoByField(List<dynamic> values, String fieldName) async {
     try {
       await TransportDb.connect();
       final transports = await transportCollection?.find(where.oneFrom(fieldName, values)).toList();
@@ -60,6 +60,7 @@ class TransportDb{
   }
 
   static update(Transport transport) async {
+    await connect();
     var u = await transportCollection?.findOne({"request": transport.request});
 
     u?["request"] = transport.request;

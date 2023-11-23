@@ -28,11 +28,11 @@ Future<void> setDriver(Request request, Driver driver) async {
   await TransportDb.insert(transport);
   await changeRequestSituation(request.id, "AG");
 
-  String title = "Você foi escolhido para um transporte";
-  String desc = "Clique para acessar!";
   List<dynamic>? tokens = driver.token;
   
   if(tokens != null){
+    String title = "Você foi escolhido para um transporte";
+    String desc = "Clique para acessar!";
     for(var token in tokens){
       try {
         http.get(Uri.https("us-central1-moveout-c74de.cloudfunctions.net", "sendMessage", {"token": token, "title": title, "body": desc}));
@@ -40,6 +40,39 @@ Future<void> setDriver(Request request, Driver driver) async {
         print(e);
       }
     }
+  }
+
+}
+
+Future<bool> endTransport(Request request) async {
+  try {
+    dynamic transportMap = await getTransport(request.id);
+    Transport transport = Transport.fromMap(transportMap);
+    transport.situation = "Completed";
+
+    await TransportDb.update(transport);
+    await RequestDb.update(request);
+    await changeRequestSituation(request.id, "AG");
+
+    return true;
+  } catch (e) {
+    print(e);
+    return false;
+  }
+
+}
+
+Future<Map<String, dynamic>?> getTransport(request) async {
+
+  try {
+    
+    var transportList = await TransportDb.getInfoByField([request], "request");
+
+    return transportList![0];
+
+  } catch (e) {
+    print(e);
+    return null;
   }
 
 }

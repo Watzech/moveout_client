@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:moveout1/screens/interested_drivers.dart';
 import 'package:moveout1/services/delete_request.dart';
+import 'package:moveout1/services/transports.dart';
 import 'package:moveout1/widgets/default_button.dart';
 import 'package:moveout1/widgets/profile_image_container.dart';
 import 'package:moveout1/widgets/sliding_panel_widgets/custom_summary_subtext_row.dart';
@@ -305,7 +306,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                     setState(() {
                       _isLoading = true;
                     });
-                    await cancelRequest(widget.request);
+                    await endTransport(widget.request);
                     setState(() {
                       _isLoading = false;
                     });
@@ -610,7 +611,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                 onPressedFunction: () {},
                                 isLoading: true)
                             : ElevatedButton(
-                                onPressed: _showCancelRequestDialog,
+                                onPressed: _showFinishRequestDialog,
                                 style: ButtonStyle(
                                         backgroundColor:
                                             MaterialStateProperty.all(Colors.green),
