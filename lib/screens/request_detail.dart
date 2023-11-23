@@ -39,6 +39,9 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPiKey = constants.API_KEY;
   bool _isLoading = false;
+  Transport? transport;
+  Driver? driver;
+  int rating = 5;
 
   @override
   void initState() {
@@ -56,6 +59,22 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
         BitmapDescriptor.defaultMarker);
 
     _getPolyline();
+
+    if (widget.request.status == 'AG') {
+      getInfoFromTransport(widget.request);
+    }
+  }
+
+  Future<void> getInfoFromTransport(Request request) async {
+    setState(() {
+      _isLoading = true;
+    });
+    var transportMap = await getTransport(request.id);
+    transport = Transport.fromMap(transportMap!);
+    driver = await getDriver(transport!.driver);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _onMapCreated(GoogleMapController controller) async {
@@ -205,7 +224,32 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     ).show(context);
   }
 
-  void showDriverDialog(BuildContext context, Driver driver, List<Transport>? transportsList, double rating, Request request) {
+  Future<dynamic> completionSuccessfulFLushBar() {
+    return Flushbar(
+      messageText: const Padding(
+        padding: EdgeInsets.fromLTRB(45, 15, 15, 15),
+        child: Text(
+          'Pedido concluído com sucesso!',
+          style: TextStyle(
+              fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+      backgroundColor: Colors.green,
+      padding: const EdgeInsets.all(15),
+      icon: const Padding(
+        padding: EdgeInsets.fromLTRB(25, 15, 15, 15),
+        child: Icon(
+          Icons.check,
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
+      duration: const Duration(seconds: 3),
+    ).show(context);
+  }
+
+  void showDriverDialog(BuildContext context, Driver driver,
+      List<Transport>? transportsList, double rating, Request request) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -229,17 +273,16 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                           child: Text(
                             driver.name,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 25,
-                              fontFamily: 'BebasKai'
-                            ),
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 25,
+                                fontFamily: 'BebasKai'),
                           ),
                         )
                       ],
                     )),
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(15,0,15,15),
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
                         child: RatingBar.builder(
                           // initialRating: rating,
                           initialRating: rating,
@@ -260,10 +303,15 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                         ),
                       ),
                     ),
-                    CustomSummarySubtextRow(title: 'Telefone:', text: driver.phone),
-                    CustomSummarySubtextRow(title: 'Transportes realizados:', text: transport.toString()),
-                    CustomSummarySubtextRow(title: 'Membro desde:', text: '${driver.createdAt.month}/${driver.createdAt.year}'),
-
+                    CustomSummarySubtextRow(
+                        title: 'Telefone:', text: driver.phone),
+                    CustomSummarySubtextRow(
+                        title: 'Transportes realizados:',
+                        text: transport.toString()),
+                    CustomSummarySubtextRow(
+                        title: 'Membro desde:',
+                        text:
+                            '${driver.createdAt.month}/${driver.createdAt.year}'),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                       child: Row(
@@ -291,26 +339,87 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
-            content: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Deseja concluir esse pedido?',
-                style: TextStyle(fontSize: 17),
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Center(
+                    child: Column(
+                      children: [
+                        ImageContainer(
+                          photoString: driver!.photo,
+                          imageSize: MediaQuery.sizeOf(context).height * 0.18,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.sizeOf(context).height * 0.015,
+                        ),
+                        Text(
+                          'Avalie sua experiência com ',
+                          style: TextStyle(
+                              fontSize: MediaQuery.sizeOf(context).width * 0.04,
+                              fontWeight: FontWeight.bold,
+                              // fontFamily: 'BebasKai',
+                              color: Theme.of(context).colorScheme.primary),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          '${driver!.name}!',
+                          style: TextStyle(
+                              fontSize: MediaQuery.sizeOf(context).width * 0.04,
+                              fontWeight: FontWeight.bold,
+                              // fontFamily: 'BebasKai',
+                              color: Theme.of(context).colorScheme.primary),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.015,
+                  ),
+                  Center(
+                    child: RatingBar.builder(
+                      // initialRating: rating,
+                      initialRating: 5,
+                      allowHalfRating: false,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      ignoreGestures: false,
+                      itemSize: MediaQuery.sizeOf(context).width * 0.075,
+                      itemCount: 5,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 3.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        size: 1,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      onRatingUpdate: (value) {
+                        setState(() {
+                          rating = value.toInt();
+                        });
+                      },
+                    ),
+                  )
+                ],
               ),
             ),
             actions: [
               TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop();
-                    widget.request.status = "CO";
                     setState(() {
                       _isLoading = true;
                     });
-                    await endTransport(widget.request);
+                    await endTransport(widget.request, rating);
                     setState(() {
                       _isLoading = false;
                     });
-                    cancelationSuccessfulFLushBar();
+                    completionSuccessfulFLushBar();
+                    setState(() {
+                      widget.request.status = "CO";
+                    });
                   },
                   child: const Text('Sim')),
               TextButton(
@@ -398,76 +507,90 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 color: Theme.of(context).colorScheme.secondary,
                 size: 30,
               )),
-          actions:[
-            widget.request.status == 'AG' || widget.request.status == 'EA'  
-            ? Padding(
-              padding: EdgeInsets.only(right: MediaQuery.sizeOf(context).width * 0.03),
-              child: InkWell(
-                onTap: () {
-                  widget.request.status == 'AG' 
-                  ? Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      return InterestedDriversScreen(interesteds: widget.request.interesteds, request: widget.request);
-                    },
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(1.0, 0.0);
-                      const end = Offset.zero;
-                      const curve = Curves.ease;
-                      var tween = Tween(begin: begin, end: end).chain(
-                        CurveTween(curve: curve),
-                      );
-                      var offsetAnimation = animation.drive(tween);
-                      return SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
-                      );
-                    },
-                  ))
-                 : widget.request.status == 'EA' 
-                  ? Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      return InterestedDriversScreen(interesteds: widget.request.interesteds, request: widget.request);
-                    },
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(1.0, 0.0);
-                      const end = Offset.zero;
-                      const curve = Curves.ease;
-                      var tween = Tween(begin: begin, end: end).chain(
-                        CurveTween(curve: curve),
-                      );
-                      var offsetAnimation = animation.drive(tween);
-                      return SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
-                      );
-                    },
-                  ))
-                  : null;
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.person_sharp,
-                      color: Theme.of(context).colorScheme.secondary,
-                      size: 30,
-                    ),
-                    Icon(
-                      Icons.arrow_right,
-                      color: Theme.of(context).colorScheme.secondary,
-                      size: 20,
-                    ),
-                  ],
-                )),
-            )
-            : const SizedBox()
-          ] ,
+          actions: [
+            widget.request.status == 'AG' || widget.request.status == 'EA'
+                ? Padding(
+                    padding: EdgeInsets.only(
+                        right: MediaQuery.sizeOf(context).width * 0.03),
+                    child: InkWell(
+                        onTap: () {
+                          widget.request.status == 'AG'
+                              ? Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return InterestedDriversScreen(
+                                          interesteds:
+                                              widget.request.interesteds,
+                                          request: widget.request);
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      const begin = Offset(1.0, 0.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.ease;
+                                      var tween =
+                                          Tween(begin: begin, end: end).chain(
+                                        CurveTween(curve: curve),
+                                      );
+                                      var offsetAnimation =
+                                          animation.drive(tween);
+                                      return SlideTransition(
+                                        position: offsetAnimation,
+                                        child: child,
+                                      );
+                                    },
+                                  ))
+                              : widget.request.status == 'EA'
+                                  ? Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                            secondaryAnimation) {
+                                          return InterestedDriversScreen(
+                                              interesteds:
+                                                  widget.request.interesteds,
+                                              request: widget.request);
+                                        },
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          const begin = Offset(1.0, 0.0);
+                                          const end = Offset.zero;
+                                          const curve = Curves.ease;
+                                          var tween =
+                                              Tween(begin: begin, end: end)
+                                                  .chain(
+                                            CurveTween(curve: curve),
+                                          );
+                                          var offsetAnimation =
+                                              animation.drive(tween);
+                                          return SlideTransition(
+                                            position: offsetAnimation,
+                                            child: child,
+                                          );
+                                        },
+                                      ))
+                                  : null;
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.person_sharp,
+                              color: Theme.of(context).colorScheme.secondary,
+                              size: 30,
+                            ),
+                            Icon(
+                              Icons.arrow_right,
+                              color: Theme.of(context).colorScheme.secondary,
+                              size: 20,
+                            ),
+                          ],
+                        )),
+                  )
+                : const SizedBox()
+          ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4.0),
             child: Container(
@@ -579,57 +702,69 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       height: 20,
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                      child: widget.request.status == 'EA' 
-                        ? _isLoading
-                          ? DefaultButton(
-                              text: 'CANCELAR PEDIDO',
-                              onPressedFunction: () {},
-                              isLoading: true)
-                          : ElevatedButton(
-                              onPressed: _showCancelRequestDialog,
-                              style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(Colors.red),
-                                      fixedSize: MaterialStateProperty.all(Size(
-                                          MediaQuery.of(context).size.width *
-                                              0.6,
-                                          MediaQuery.of(context).size.height *
-                                              0.075))),
-                              child: const Text(
-                                'CANCELAR PEDIDO',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontFamily: 'BebasKai'),
-                              ),
-                            )
-                        : widget.request.status == 'AG'
-                          ? _isLoading
-                            ? DefaultButton(
-                                text: 'CONCLUIR PEDIDO',
-                                onPressedFunction: () {},
-                                isLoading: true)
-                            : ElevatedButton(
-                                onPressed: _showFinishRequestDialog,
-                                style: ButtonStyle(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: widget.request.status == 'EA'
+                            ? _isLoading
+                                ? DefaultButton(
+                                    text: 'CANCELAR PEDIDO',
+                                    onPressedFunction: () {},
+                                    isLoading: true)
+                                : ElevatedButton(
+                                    onPressed: _showCancelRequestDialog,
+                                    style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStateProperty.all(Colors.green),
-                                        fixedSize: MaterialStateProperty.all(Size(
-                                            MediaQuery.of(context).size.width *
-                                                0.6,
-                                            MediaQuery.of(context).size.height *
-                                                0.075))),
-                                child: const Text(
-                                  'CONCLUIR PEDIDO',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontFamily: 'BebasKai'),
-                                ),
-                              )
-                          : const SizedBox()
-                    ),
+                                            MaterialStateProperty.all(
+                                                Colors.red),
+                                        fixedSize: MaterialStateProperty.all(
+                                            Size(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.6,
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.075))),
+                                    child: const Text(
+                                      'CANCELAR PEDIDO',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25,
+                                          fontFamily: 'BebasKai'),
+                                    ),
+                                  )
+                            : widget.request.status == 'AG'
+                                ? _isLoading
+                                    ? DefaultButton(
+                                        text: 'CONCLUIR PEDIDO',
+                                        onPressedFunction: () {},
+                                        isLoading: true)
+                                    : ElevatedButton(
+                                        onPressed: _showFinishRequestDialog,
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.green),
+                                            fixedSize:
+                                                MaterialStateProperty.all(
+                                                    Size(
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.6,
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.075))),
+                                        child: const Text(
+                                          'CONCLUIR PEDIDO',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                              fontFamily: 'BebasKai'),
+                                        ),
+                                      )
+                                : const SizedBox()),
                   ],
                 ),
               ),
