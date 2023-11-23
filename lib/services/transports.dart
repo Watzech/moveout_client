@@ -2,6 +2,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:moveout1/classes/driver.dart';
 import 'package:moveout1/classes/request.dart';
 import 'package:moveout1/classes/transport.dart';
+import 'package:moveout1/database/driver_db.dart';
 import 'package:moveout1/database/request_db.dart';
 import 'package:moveout1/database/transport_db.dart';
 import 'package:moveout1/services/device_info.dart';
@@ -45,6 +46,7 @@ Future<void> setDriver(Request request, Driver driver) async {
 }
 
 Future<bool> endTransport(Request request) async {
+  
   try {
     dynamic transportMap = await getTransport(request.id);
     Transport transport = Transport.fromMap(transportMap);
@@ -58,6 +60,21 @@ Future<bool> endTransport(Request request) async {
   } catch (e) {
     print(e);
     return false;
+  }
+
+}
+
+Future<Driver?> getDriver(cnh) async {
+
+  try {
+    
+    var driverList = await DriverDb.getInfoByField([cnh], "cnh");
+
+    return Driver.fromMap(driverList![0]);
+
+  } catch (e) {
+    print(e);
+    return null;
   }
 
 }

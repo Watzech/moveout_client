@@ -50,7 +50,7 @@ class Driver {
     photo = map['photo'],
     cnh = map['cnh'],
     address = map['address'],
-    createdAt = map['createdAt'],
-    updatedAt = map['updatedAt'],
+    createdAt = map['createdAt'].runtimeType == String ? DateTime.parse(map['createdAt']) : map['createdAt'],
+    updatedAt = map['updatedAt'].runtimeType == String ? DateTime.parse(map['updatedAt']) : map['updatedAt'],
     token = map['token'];
 }
