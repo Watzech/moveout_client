@@ -295,16 +295,16 @@ class _AddressPickerFormFieldState extends State<AddressPickerFormField> {
         labelStyle: cLabelStyle,
         helperText:
             helperEmpty, // Helper text como uma string contendo um espaço.
-        suffixIcon: IconButton(
-          icon: Icon(
-            Icons.room,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            //aqui, abrir o mapa para selecionar o endereço
-            setState(() {});
-          },
-        ),
+        // suffixIcon: IconButton(
+        //   icon: Icon(
+        //     Icons.room,
+        //     color: Colors.white,
+        //   ),
+        //   onPressed: () {
+        //     //aqui, abrir o mapa para selecionar o endereço
+        //     setState(() {});
+        //   },
+        // ),
       ),
       validator: widget.validatorFunction,
     );

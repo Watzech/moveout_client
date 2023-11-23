@@ -241,7 +241,7 @@ class _SingupTabBarState extends State<SingupTabBar> {
                           padding: const EdgeInsets.only(
                               left: 25.0, right: 25.0, top: 15.0, bottom: 15.0),
                           child: AddressPickerFormField(
-                            lbl: 'Endereço (CEP por enquanto):',
+                            lbl: 'Endereço:',
                             controller: _addressFormFieldController,
                             validatorFunction: (value) {
                               if (value == null || value.isEmpty) {
