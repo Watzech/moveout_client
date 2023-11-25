@@ -19,16 +19,13 @@ class CustomIcons {
 class RequestCard extends StatelessWidget {
   final Request request;
 
-  const RequestCard(
-      {super.key,
-      required this.request
-      });
+  const RequestCard({super.key, required this.request});
 
   @override
   Widget build(BuildContext context) {
     Intl.defaultLocale = 'pt_BR';
     final reaisFormatter = NumberFormat("'R\$:' #,##0.00", Intl.defaultLocale);
-    
+
     IconData icon;
     switch (request.price["truckSize"]) {
       case 'Small':
@@ -119,15 +116,6 @@ class RequestCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        //'Pedido $request. ',
-                        '',
-                        style: TextStyle(
-                          fontFamily: 'BebasKai',
-                          fontSize: 20,
-                          color: statusColor,
-                        ),
-                      ),
                       Icon(
                         Icons.circle,
                         color: statusColor,
@@ -141,6 +129,20 @@ class RequestCard extends StatelessWidget {
                           color: statusColor,
                         ),
                       ),
+                      const SizedBox(width: 10),
+                      request.interesteds.isNotEmpty
+                          ? CircleAvatar(
+                              backgroundColor: Colors.red,
+                              radius: 7,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  request.interesteds.length.toString(),
+                                  style: const TextStyle(color: Colors.white, fontFamily: 'BebasKai', fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                          : const SizedBox()
                     ],
                   ),
                   Padding(

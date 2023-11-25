@@ -578,21 +578,36 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                       ))
                                   : null;
                         },
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.person_sharp,
-                              color: Theme.of(context).colorScheme.secondary,
-                              size: 30,
-                            ),
-                            Icon(
-                              Icons.arrow_right,
-                              color: Theme.of(context).colorScheme.secondary,
-                              size: 20,
-                            ),
-                          ],
-                        )),
+                        child: Stack(children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.person_sharp,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: 30,
+                              ),
+                              Icon(
+                                Icons.arrow_right,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                          widget.request.interesteds.isNotEmpty
+                          ? CircleAvatar(
+                              backgroundColor: Colors.red,
+                              radius: 7,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  widget.request.interesteds.length.toString(),
+                                  style: const TextStyle(color: Colors.white, fontFamily: 'BebasKai', fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                          : const SizedBox()
+                        ])),
                   )
                 : const SizedBox()
           ],
