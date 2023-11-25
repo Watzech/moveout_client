@@ -405,6 +405,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 ],
               ),
             ),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
             actions: [
               TextButton(
                   onPressed: () async {
@@ -421,12 +422,12 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       widget.request.status = "CO";
                     });
                   },
-                  child: const Text('Sim')),
+                  child: const Text('Avaliar')),
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Não'))
+                  child: const Text('Voltar'))
             ],
           );
         });
