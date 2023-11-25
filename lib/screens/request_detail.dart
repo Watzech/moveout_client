@@ -519,6 +519,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                               ? Navigator.push(
                                   context,
                                   PageRouteBuilder(
+                                    settings: const RouteSettings(
+                                        name: '/interestedDrivers'),
                                     pageBuilder: (context, animation,
                                         secondaryAnimation) {
                                       return InterestedDriversScreen(
@@ -547,6 +549,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                   ? Navigator.push(
                                       context,
                                       PageRouteBuilder(
+                                        settings: const RouteSettings(
+                                            name: '/interestedDrivers'),
                                         pageBuilder: (context, animation,
                                             secondaryAnimation) {
                                           return InterestedDriversScreen(

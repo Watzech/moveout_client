@@ -45,6 +45,9 @@ class _RequestsScreenState extends State<RequestsScreen> {
 
   Route _createRoute(Request item) {
     return PageRouteBuilder(
+      settings: const RouteSettings(
+        name: '/requestDetail'
+      ),
       pageBuilder: (context, animation, secondaryAnimation) =>
           RequestDetailScreen(request: item),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

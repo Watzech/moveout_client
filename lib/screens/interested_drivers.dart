@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:moveout1/classes/driver.dart';
@@ -13,11 +14,8 @@ import 'package:moveout1/widgets/sliding_panel_widgets/custom_divider.dart';
 import 'package:moveout1/widgets/sliding_panel_widgets/custom_summary_subtext_row.dart';
 
 class InterestedDriversScreen extends StatefulWidget {
-  const InterestedDriversScreen({
-    super.key,
-    required this.interesteds,
-    required this.request
-  });
+  const InterestedDriversScreen(
+      {super.key, required this.interesteds, required this.request});
 
   final List<dynamic> interesteds;
   final Request request;
@@ -34,12 +32,35 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
   bool _isLoading = true;
   late Request _request;
 
-  void showDriverDialog(BuildContext context, Driver driver, List<Transport>? transportsList, double rating, Request request) {
+  Future<dynamic> completionSuccessfulFLushBar(String name) {
+    return Flushbar(
+      messageText: Padding(
+        padding: const EdgeInsets.fromLTRB(45, 15, 15, 15),
+        child: Text(
+          'Motorista $name aceito!',
+          style: const TextStyle(
+              fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+      backgroundColor: Colors.green,
+      padding: const EdgeInsets.all(15),
+      icon: const Padding(
+        padding: EdgeInsets.fromLTRB(25, 15, 15, 15),
+        child: Icon(
+          Icons.check,
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
+      duration: const Duration(seconds: 3),
+    ).show(context);
+  }
+
+  void showDriverDialog(BuildContext context, Driver driver,
+      List<Transport>? transportsList, double rating, Request request) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          List<String> filterOptions = <String>['Distância', 'Valor'];
-          double fontSize = MediaQuery.of(context).size.height * 0.022;
           int transport = transportsList != null ? transportsList.length : 0;
           return AlertDialog(
             content: StatefulBuilder(
@@ -60,17 +81,16 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                           child: Text(
                             driver.name,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 25,
-                              fontFamily: 'BebasKai'
-                            ),
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 25,
+                                fontFamily: 'BebasKai'),
                           ),
                         )
                       ],
                     )),
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(15,0,15,15),
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
                         child: RatingBar.builder(
                           // initialRating: rating,
                           initialRating: rating,
@@ -91,10 +111,15 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                         ),
                       ),
                     ),
-                    CustomSummarySubtextRow(title: 'Telefone:', text: driver.phone),
-                    CustomSummarySubtextRow(title: 'Transportes realizados:', text: transport.toString()),
-                    CustomSummarySubtextRow(title: 'Membro desde:', text: '${driver.createdAt.month}/${driver.createdAt.year}'),
-
+                    CustomSummarySubtextRow(
+                        title: 'Telefone:', text: driver.phone),
+                    CustomSummarySubtextRow(
+                        title: 'Transportes realizados:',
+                        text: transport.toString()),
+                    CustomSummarySubtextRow(
+                        title: 'Membro desde:',
+                        text:
+                            '${driver.createdAt.month}/${driver.createdAt.year}'),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                       child: Row(
@@ -109,7 +134,8 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                           TextButton(
                             onPressed: () async {
                               request.status = "AG";
-                              Navigator.pop(context);
+                              Navigator.popUntil(context, (route) => route.settings.name == "/requestDetail");
+                              completionSuccessfulFLushBar(driver.name);
                               await setDriver(request, driver);
                             },
                             child: const Text('Aceitar Motorista'),
@@ -140,10 +166,10 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
           dynamic transport = await getTransports(element["cnh"]);
           double rating = getCurrentRating(transport);
           interestedDrivers.add(Driver.fromMap(element));
-          
-          if(transport != null){
+
+          if (transport != null) {
             List<Transport> list = [];
-            for(var transportItem in transport){
+            for (var transportItem in transport) {
               list.add(Transport.fromMap(transportItem));
             }
             interestedDriversTransports.add(list);
@@ -211,15 +237,26 @@ class _InterestedDriversScreenState extends State<InterestedDriversScreen> {
                             itemCount: _driverArray.length,
                             itemBuilder: (context, index) {
                               final item = _driverArray[index];
-                              final itemTransport = _transportsArray[index]!.isNotEmpty ? _transportsArray[index] : null;
+                              final itemTransport =
+                                  _transportsArray[index]!.isNotEmpty
+                                      ? _transportsArray[index]
+                                      : null;
                               final itemRating = _ratingArray[index];
                               return Column(
                                 children: [
                                   InkWell(
                                       onTap: () {
-                                        showDriverDialog(context, item, itemTransport, itemRating, _request);
+                                        showDriverDialog(
+                                            context,
+                                            item,
+                                            itemTransport,
+                                            itemRating,
+                                            _request);
                                       },
-                                      child: DriverCard(driver: item, rating: itemRating, transports: itemTransport)),
+                                      child: DriverCard(
+                                          driver: item,
+                                          rating: itemRating,
+                                          transports: itemTransport)),
                                   const CustomDivider(),
                                 ],
                               );
