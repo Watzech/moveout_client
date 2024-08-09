@@ -7,6 +7,9 @@
 <p align="justify">
 &nbsp;&nbsp;&nbsp;&nbsp;O objetivo do MoveOut é fornecer uma solução de transporte de móveis de maneira prática, segura e eficiente, através da conexão entre clientes que desejam transportar seus móveis e motoristas que possuem veículos apropriados para realizar esse serviço; oferecemos uma plataforma confiável e segura para que as transações sejam realizadas, proporcionando aos clientes tranquilidade e garantia de um serviço de qualidade.
 </p>
+<p align="center">
+<img src="https://github.com/user-attachments/assets/1ade1fb2-aa8f-487c-8727-86885f9d33b7" width="200">
+</p>
 
 ## Desenvolvimento
 
